@@ -1,4 +1,6 @@
-pragma solidity ^0.5.0;
+// SPDX-License-Identifier: MIT
+
+pragma solidity ^0.6.0;
 pragma experimental ABIEncoderV2;
 // specifies what version of compiler this code will be compiled with
 
@@ -13,6 +15,10 @@ contract Voting {
   */
 
   string[] public candidateList;
+
+  /* Broadcast event when a user voted
+  */
+  event VoteReceived(address user, string candidate);
 
   /* This is the constructor which will be called once and only once - when you
   deploy the contract to the blockchain. When we deploy the contract,
@@ -31,8 +37,11 @@ contract Voting {
   // is equivalent to casting a vote
   function voteForCandidate(string memory candidate) public {
     votesReceived[candidate] += 1;
+
+    // Broadcast voted event
+    emit VoteReceived(msg.sender, candidate);
   }
-  
+
   function candidateCount() public view returns (uint256) {
       return candidateList.length;
   }

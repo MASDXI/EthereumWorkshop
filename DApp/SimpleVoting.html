@@ -8,9 +8,115 @@
         <script type="text/javascript">
             var contractAddress = '0x6c527b7c6bbd2374791998c6abf9f90bca70d015';
             var network = "";
+            let networkDisplay = "";
             var userAccount = '';
             var warning = "";
-            let abi = [{"constant":false,"inputs":[{"name":"candidate","type":"string"}],"name":"voteForCandidate","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"inputs":[{"name":"candidateNames","type":"string[]"}],"payable":false,"stateMutability":"nonpayable","type":"constructor"},{"constant":true,"inputs":[],"name":"candidateCount","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"","type":"uint256"}],"name":"candidateList","outputs":[{"name":"","type":"string"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"candidate","type":"string"}],"name":"totalVotesFor","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"}];
+            let abi = [
+            {
+              "constant": false,
+              "inputs": [
+                {
+                  "internalType": "string",
+                  "name": "candidate",
+                  "type": "string"
+                }
+              ],
+              "name": "voteForCandidate",
+              "outputs": [],
+              "payable": false,
+              "stateMutability": "nonpayable",
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
+                  "internalType": "string[]",
+                  "name": "candidateNames",
+                  "type": "string[]"
+                }
+              ],
+              "payable": false,
+              "stateMutability": "nonpayable",
+              "type": "constructor"
+            },
+            {
+              "anonymous": false,
+              "inputs": [
+                {
+                  "indexed": false,
+                  "internalType": "address",
+                  "name": "user",
+                  "type": "address"
+                },
+                {
+                  "indexed": false,
+                  "internalType": "string",
+                  "name": "candidate",
+                  "type": "string"
+                }
+              ],
+              "name": "VoteReceived",
+              "type": "event"
+            },
+            {
+              "constant": true,
+              "inputs": [],
+              "name": "candidateCount",
+              "outputs": [
+                {
+                  "internalType": "uint256",
+                  "name": "",
+                  "type": "uint256"
+                }
+              ],
+              "payable": false,
+              "stateMutability": "view",
+              "type": "function"
+            },
+            {
+              "constant": true,
+              "inputs": [
+                {
+                  "internalType": "uint256",
+                  "name": "",
+                  "type": "uint256"
+                }
+              ],
+              "name": "candidateList",
+              "outputs": [
+                {
+                  "internalType": "string",
+                  "name": "",
+                  "type": "string"
+                }
+              ],
+              "payable": false,
+              "stateMutability": "view",
+              "type": "function"
+            },
+            {
+              "constant": true,
+              "inputs": [
+                {
+                  "internalType": "string",
+                  "name": "candidate",
+                  "type": "string"
+                }
+              ],
+              "name": "totalVotesFor",
+              "outputs": [
+                {
+                  "internalType": "uint256",
+                  "name": "",
+                  "type": "uint256"
+                }
+              ],
+              "payable": false,
+              "stateMutability": "view",
+              "type": "function"
+            }
+          ]
+            let KULAPBesuNetworkId = 2027
         </script>
         <script type="text/javascript">
           window.addEventListener('load', function() {
@@ -41,9 +147,10 @@
               } else {
                 console.log('No web3? You should consider trying MetaMask!')
                 // fallback - use your fallback strategy (local node / hosted node + in-dapp id mgmt / fail)
-                // web3 = new Web3( new Web3.providers.HttpProvider( "https://kovan.infura.io/" ));
-                web3 = new Web3( new Web3.providers.HttpProvider( "https://rpc.tch.in.th" ));
-
+                web3 = new Web3( new Web3.providers.HttpProvider( "https://kovan.infura.io/v3/YOUR_INFURA_KEY" ));
+                //web3 = new Web3( new Web3.providers.HttpProvider( "http://localhost:8545/" ));
+                // web3 = new Web3( new Web3.providers.HttpProvider( "https://rpc.tch.in.th" ));
+                
                 // Now you can start your app & access web3 freely:
                 startApp();
               }
@@ -58,32 +165,48 @@
                   switch (netId) {
                     case 1:
                         network = 'Mainnet';
+                        networkDisplay = network;
                         warning = 'please switch your network to Kovan or Thai Chain';
-                      break
+                        break
                     case 2:
                         network = 'Deprecated Morden';
+                        networkDisplay = network;
                         warning = 'please switch your network to Kovan or Thai Chain';
-                      break
+                        break
                     case 3:
                         network = 'Ropsten';
+                        networkDisplay = network;
                         warning = 'please switch your network to Kovan or Thai Chain';
-                      break
+                        break
                     case 4:
                         network = 'Rinkeby';
+                        networkDisplay = network;
                         contractAddress = '0x6075b70b4f94af25e047fac6a538ea06a5206bca';
-                      break
+                        break
                     case 7:
                         network = 'Thai Chain';
+                        networkDisplay = network;
                         contractAddress = '0x0898424ddf8f9478aad9f2280a6480f1858ad1c6';
-                      break
+                        break
                     case 42:
                         network = 'Kovan';
-                      break
+                        networkDisplay = network;
+                        break
+                    case 5777:
+                        network = 'Ganache';
+                        networkDisplay = network;
+                        break
+                    case KULAPBesuNetworkId:
+                        network = 'KULAP Besu'
+                        networkDisplay = '<strong>KULAP Besu</strong><br/>(Enterprise Blockchain)';
+                        contractAddress = '0x5924aC8829CE51674415Ae619C796C12815010eF';
+                        break
                     default:
                         network = 'Unknown';
+                        networkDisplay = network;
                         warning = 'please switch your network to Kovan or Thai Chain';
                   }
-                  $("#eth_network").text(network);
+                  $("#eth_network").html(networkDisplay);
                   $("#warning").text(warning);
                   $("#candidateContractAddress").val(contractAddress);
                   
@@ -111,6 +234,17 @@
                 
                 // Candidate contract
                 displayCandidates();
+
+                //Subscribe to Vote Received Event
+                let contract = getVotingContract();
+                contract.events.VoteReceived()
+                .on('data', function(event){
+                    $("<div>" + JSON.stringify(event) + "</div>").appendTo("#events");
+                })
+                .on('changed', function(event){
+                    // remove event from local database
+                })
+                .on('error', console.error);
             }
             
             // Get block info
@@ -208,6 +342,8 @@
                       let link
                       if ('Thai Chain' == network) {
                         link = "https://exp.tch.in.th/tx/" + transactionHash
+                      } else if ('KULAP Besu' == network) {
+                        link = "http://besu1.kulap.io/tx/" + transactionHash
                       } else {
                         link = "https://" + network.toLowerCase() + ".etherscan.io/tx/" + transactionHash
                       }
@@ -289,12 +425,12 @@
 
             function openContractOnEtherScan() {
               let address = $("#candidateContractAddress").val()
-              let url = 'https://kovan.etherscan.io/address/' + address
+              let url = 'https://' + network + '.etherscan.io/address/' + address
               window.open(url,'_blank');
             }
 
             function openUserAddressOnEtherScan() {
-              let url = 'https://kovan.etherscan.io/address/' + userAccount
+              let url = 'https://' + network + '.etherscan.io/address/' + userAccount
               window.open(url,'_blank');
             }
             
@@ -311,7 +447,7 @@
             padding: 10px;
             border-color: #2196F3;
             text-align: center;
-            width: 11em;
+            width: 15em;
             margin: auto;
             margin-top: 20px;
         }
@@ -463,6 +599,10 @@
                 -
               </span>
             </p>
+        </div>
+
+        <div id='events'>
+          Events: 
         </div>
 
         <footer class="footer">
